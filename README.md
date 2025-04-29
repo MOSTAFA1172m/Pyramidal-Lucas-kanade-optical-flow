@@ -20,7 +20,8 @@ This project implements the Pyramidal Lucas-Kanade Optical Flow algorithm to est
 1. Clone the repository:
    ```bash
    git clone https://github.com/MOSTAFA1172m/Pyramidal-Lucas-kanade-optical-flow.git
-   cd Pyramidal-Lucas-kanade-optical-flow   
+   cd Pyramidal-Lucas-kanade-optical-flow
+   ```
 ### Methodology
 
 
@@ -48,6 +49,7 @@ Sobel operators are used to compute image gradients (`Ix`, `Iy`) in the x and y 
 
 G_x = \begin{bmatrix} -1 & 0 & 1 \\ -2 & 0 & 2 \\ -1 & 0 & 1 \end{bmatrix}, \quad G_y = \begin{bmatrix} -1 & -2 & -1 \\ 0 & 0 & 0 \\ 1 & 2 & 1 \end{bmatrix}
 
+```
 Temporal gradient (`It`) is computed as the difference between warped and original frames.
 
 
@@ -94,6 +96,7 @@ Flow updates are computed via least-squares:
 
 ```math
 A = \begin{bmatrix} I_x & I_y \end{bmatrix}, \quad b = -I_t, \quad \mathbf{A}^T \mathbf{A} \nu = \mathbf{A}^T \mathbf{b}
+```
 
 Iterations (typically 3) refine the flow estimates.
 
