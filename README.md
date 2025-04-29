@@ -61,7 +61,8 @@ Matplotlib
 1)Clone the repository:
 
 
-
+git clone https://github.com/MOSTAFA1172m/Pyramidal-Lucas-kanade-optical-flow.git
+cd Pyramidal-Lucas-kanade-optical-flow
 
 
 
