@@ -32,9 +32,25 @@ Includes Sobel-based gradient computation and image warping
 
 
 
--Python 3.6+
--OpenCV (cv2)
--NumPy
+Python 3.6+
+
+
+
+
+OpenCV (cv2)
+
+
+
+
+NumPy
+
+
+
+Matplotlib
+
+
+
+
 
 ### Setup
 
@@ -48,4 +64,4 @@ Includes Sobel-based gradient computation and image warping
 
 
 
-Matplotlib
+
