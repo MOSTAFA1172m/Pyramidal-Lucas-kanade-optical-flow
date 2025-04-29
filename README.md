@@ -100,7 +100,7 @@ A = \begin{bmatrix} I_x & I_y \end{bmatrix}, \quad b = -I_t, \quad \mathbf{A}^T 
 
 Iterations (typically 3) refine the flow estimates.
 
-Visualization
+### Visualization
 
 
 
@@ -112,7 +112,7 @@ Flow fields (`u`, `v`) are visualized using quiver plots, with arrows indicating
 
 An exaggeration factor (e.g., 50) is applied for better visibility.
 
-
+![Alt text](path/to/image)
 
 ### Results
 
