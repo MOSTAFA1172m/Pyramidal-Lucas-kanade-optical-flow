@@ -59,38 +59,62 @@ Methodology
 Data Preparation
 
 Dataset: Dimetrodon sequence from the Middlebury Vision repository, consisting of two frames (im0.png, im1.png) with slight motion.
-Images are loaded in grayscale and normalized to [0, 1].
+Images are loaded in grayscale and normalized to $[0, 1]$.
 
 Gradient Computation
 
-Sobel operators are used to compute image gradients (Ix, Iy) in the x and y directions:G_x = \begin{bmatrix} -1 & 0 & 1 \\ -2 & 0 & 2 \\ -1 & 0 & 1 \end{bmatrix}, \quad G_y = \begin{bmatrix} -1 & -2 & -1 \\ 0 & 0 & 0 \\ 1 & 2 & 1 \end{bmatrix}
-
-
-Temporal gradient (It) is computed as the difference between warped and original frames.
+Sobel operators compute image gradients ($I_x$, $I_y$) in the x and y directions:$$G_x = \begin{bmatrix} -1 & 0 & 1 \ -2 & 0 & 2 \ -1 & 0 & 1 \end{bmatrix}, \quad G_y = \begin{bmatrix} -1 & -2 & -1 \ 0 & 0 & 0 \ 1 & 2 & 1 \end{bmatrix}$$
+Gradients are calculated as:$$S_x(i, j) = \sum_{m=-1}^1 \sum_{n=-1}^1 G_x(m, n) \cdot I(i+m, j+n)$$$$S_y(i, j) = \sum_{m=-1}^1 \sum_{n=-1}^1 G_y(m, n) \cdot I(i+m, j+n)$$
+Temporal gradient ($I_t$) is the difference between warped and original frames.
 
 Image Pyramid Construction
 
 A Gaussian pyramid is built with a scaling factor of 0.5 per level (typically 3–4 levels).
-The build-pyramid function downsamples images using cv2.pyrDown and reverses the list for coarse-to-fine processing.
+The build-pyramid function downsamples images using cv2.pyrDown and reverses the list for coarse-to-fine processing:def build_pyramid(img, levels):
+    pyramid = [img]
+    for _ in range(1, levels):
+        img = cv2.pyrDown(img)
+        pyramid.append(img)
+    return pyramid[::-1]
+
+
 
 Pyramidal Lucas-Kanade Algorithm
 
 Optical flow is estimated starting at the coarsest pyramid level and refined at finer levels.
 At each level:
 Flow from the previous level is upsampled using cv2.pyrUp and scaled by 2.
-Gradients (Ix, Iy) are computed for the current level.
-The second image is warped using current flow estimates.
-Flow updates are computed via least-squares:A = \begin{bmatrix} I_x & I_y \end{bmatrix}, \quad b = -I_t, \quad \mathbf{A}^T \mathbf{A} \nu = \mathbf{A}^T \mathbf{b}
+Gradients ($I_x$, $I_y$) are computed for the current level.
+The second image is warped using current flow estimates:def warp_image(img, u, v):
+    h, w = img.shape
+    grid_x, grid_y = np.meshgrid(np.arange(w), np.arange(h))
+    map_x = (grid_x + u).astype(np.float32)
+    map_y = (grid_y + v).astype(np.float32)
+    return cv2.remap(img, map_x, map_y, interpolation=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
 
 
+Flow updates are computed via least-squares:$$A = \begin{bmatrix} I_x & I_y \end{bmatrix}, \quad b = -I_t, \quad \mathbf{A}^T \mathbf{A} \nu = \mathbf{A}^T \mathbf{b}$$where $\nu = \begin{bmatrix} u \ v \end{bmatrix}$ is the flow vector.
 Iterations (typically 3) refine the flow estimates.
 
 
 
 Visualization
 
-Flow fields (u, v) are visualized using quiver plots, with arrows indicating motion direction and magnitude.
-An exaggeration factor (e.g., 50) is applied for better visibility.
+Flow fields ($u$, $v$) are visualized using quiver plots, with arrows indicating motion direction and magnitude.
+An exaggeration factor (e.g., 50) is applied for better visibility:def draw_quiver(u, v, step=10, title="Optical Flow", scale=5, exaggeration_factor=50):
+    h, w = u.shape
+    y, x = np.mgrid[0:h:step, 0:w:step]
+    u_s = u[::step, ::step] * exaggeration_factor
+    v_s = v[::step, ::step] * exaggeration_factor
+    magnitude = np.sqrt(u_s**2 + v_s**2)
+    plt.figure(figsize=(12, 8))
+    plt.quiver(x, y, u_s, -v_s, magnitude, angles='xy', scale_units='xy', scale=scale, cmap='jet')
+    plt.colorbar(label="Flow Magnitude")
+    plt.gca().invert_yaxis()
+    plt.title(title)
+    plt.show()
+
+
 
 Results
 
