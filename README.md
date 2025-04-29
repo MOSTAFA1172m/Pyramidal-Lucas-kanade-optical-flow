@@ -112,7 +112,7 @@ Flow fields (`u`, `v`) are visualized using quiver plots, with arrows indicating
 
 An exaggeration factor (e.g., 50) is applied for better visibility.
 
-![Alt text](path/to/image)
+![Alt text](quiver_plot.png)
 
 ### Results
 
