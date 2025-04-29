@@ -1,6 +1,6 @@
 # Pyramidal Lucas-Kanade Optical Flow
 Project Overview
-This project implements the Pyramidal Lucas-Kanade Optical Flow algorithm to estimate motion between consecutive video frames. By leveraging image pyramids and iterative refinement, the algorithm accurately tracks pixel displacements across multiple resolutions, handling both small and large motions. The implementation uses Python, OpenCV, and NumPy, with visualization of motion fields using quiver plots. The project was tested on the Dimetrodon sequence from the Middlebury Vision repository.
+This project implements the Pyramidal Lucas-Kanade Optical Flow algorithm to estimate motion between consecutive video frames. By leveraging image pyramids and iterative refinement, the algorithm tracks pixel displacements across multiple resolutions, handling both small and large motions. The implementation uses Python, OpenCV, and NumPy, with motion fields visualized using quiver plots. The project was tested on the Dimetrodon sequence from the Middlebury Vision repository.
 Features
 
 Computes optical flow using the Lucas-Kanade method with a pyramidal approach.
@@ -63,14 +63,14 @@ Images are loaded in grayscale and normalized to $[0, 1]$.
 
 Gradient Computation
 
-Sobel operators compute image gradients ($I_x$, $I_y$) in the x and y directions:$$G_x = \begin{bmatrix} -1 & 0 & 1 \ -2 & 0 & 2 \ -1 & 0 & 1 \end{bmatrix}, \quad G_y = \begin{bmatrix} -1 & -2 & -1 \ 0 & 0 & 0 \ 1 & 2 & 1 \end{bmatrix}$$
-Gradients are calculated as:$$S_x(i, j) = \sum_{m=-1}^1 \sum_{n=-1}^1 G_x(m, n) \cdot I(i+m, j+n)$$$$S_y(i, j) = \sum_{m=-1}^1 \sum_{n=-1}^1 G_y(m, n) \cdot I(i+m, j+n)$$
+Sobel operators compute image gradients ($I_x$, $I_y$) in the x and y directions:$$G_x = \begin{bmatrix}-1 & 0 & 1 \-2 & 0 & 2 \-1 & 0 & 1\end{bmatrix}, \quadG_y = \begin{bmatrix}-1 & -2 & -1 \0 & 0 & 0 \1 & 2 & 1\end{bmatrix}$$
+Gradients are calculated as:$$S_x(i, j) = \sum_{m=-1}^{1} \sum_{n=-1}^{1} G_x(m, n) \cdot I(i+m, j+n)$$$$S_y(i, j) = \sum_{m=-1}^{1} \sum_{n=-1}^{1} G_y(m, n) \cdot I(i+m, j+n)$$
 Temporal gradient ($I_t$) is the difference between warped and original frames.
 
 Image Pyramid Construction
 
 A Gaussian pyramid is built with a scaling factor of 0.5 per level (typically 3–4 levels).
-The build-pyramid function downsamples images using cv2.pyrDown and reverses the list for coarse-to-fine processing:def build_pyramid(img, levels):
+The build_pyramid function downsamples images using cv2.pyrDown and reverses the list for coarse-to-fine processing:def build_pyramid(img, levels):
     pyramid = [img]
     for _ in range(1, levels):
         img = cv2.pyrDown(img)
@@ -142,3 +142,14 @@ Khaled Walid Ghalwash
 
 License
 This project is licensed under the MIT License - see the LICENSE file for details.
+Notes on Rendering
+
+Code: The Python code blocks above use ```python for syntax highlighting, which should appear colorful (e.g., keywords in orange, strings in green) when viewed on GitHub or platforms supporting GitHub-Flavored Markdown.
+Math: LaTeX equations are enclosed in $ (inline) or $$ (block) and will render as formatted math on GitHub. If equations don't render, ensure you're viewing the README on a platform with MathJax support (e.g., GitHub, Jupyter Notebook, or a Markdown viewer like Obsidian with LaTeX plugins).
+Other Platforms: If sharing on LinkedIn or platforms without LaTeX/syntax highlighting support (related to your earlier quality concerns), consider:
+Embedding screenshots of the rendered README from GitHub.
+Converting the README to a PDF with rendered math using tools like Pandoc or a Markdown-to-PDF converter, then uploading the PDF.
+Linking directly to the GitHub repository: https://github.com/MOSTAFA1172m/Pyramidal-Lucas-kanade-optical-flow for best viewing.
+
+
+
