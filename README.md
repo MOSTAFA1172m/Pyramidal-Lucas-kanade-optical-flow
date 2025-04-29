@@ -1,1 +1,120 @@
-# Pyramidal-Lucas-kanade-optical-flow
+# Pyramidal Lucas-Kanade Optical Flow
+Project Overview
+This project implements the Pyramidal Lucas-Kanade Optical Flow algorithm to estimate motion between consecutive video frames. By leveraging image pyramids and iterative refinement, the algorithm accurately tracks pixel displacements across multiple resolutions, handling both small and large motions. The implementation uses Python, OpenCV, and NumPy, with visualization of motion fields using quiver plots. The project was tested on the Dimetrodon sequence from the Middlebury Vision repository.
+Features
+
+Computes optical flow using the Lucas-Kanade method with a pyramidal approach.
+Supports multi-scale analysis for robust motion estimation.
+Visualizes flow fields with exaggerated motion for clarity.
+Includes gradient computation using Sobel operators and image warping.
+
+Installation
+Prerequisites
+
+Python 3.6+
+OpenCV (cv2)
+NumPy
+Matplotlib
+
+Setup
+
+Clone the repository:git clone https://github.com/MOSTAFA1172m/Pyramidal-Lucas-kanade-optical-flow.git
+cd Pyramidal-Lucas-kanade-optical-flow
+
+
+Install dependencies:pip install opencv-python numpy matplotlib
+
+
+Download the Dimetrodon dataset (or use your own image pairs) and place the images (im0.png, im1.png) in the project directory.
+
+Usage
+
+Ensure the input images (im0.png, im1.png) are grayscale and placed in the project directory.
+Run the main script to compute and visualize optical flow:python main.py
+
+
+The script will:
+Load the images.
+Compute optical flow using the pyramidal Lucas-Kanade algorithm.
+Display a quiver plot showing the motion field with an exaggeration factor of 50.
+
+
+
+Example Code
+import cv2
+import numpy as np
+from pyramidal_lucas_kanade import pyramidal_lucas_kanade, draw_quiver
+
+# Load images
+I1 = cv2.imread('im0.png', cv2.IMREAD_GRAYSCALE)
+I2 = cv2.imread('im1.png', cv2.IMREAD_GRAYSCALE)
+
+# Compute optical flow
+u, v = pyramidal_lucas_kanade(I1, I2, levels=4, window_size=15, iterations=3)
+
+# Visualize results
+draw_quiver(u, v, step=10, title="Dimetrodon Optical Flow", exaggeration_factor=50)
+
+Methodology
+Data Preparation
+
+Dataset: Dimetrodon sequence from the Middlebury Vision repository, consisting of two frames (im0.png, im1.png) with slight motion.
+Images are loaded in grayscale and normalized to [0, 1].
+
+Gradient Computation
+
+Sobel operators are used to compute image gradients (Ix, Iy) in the x and y directions:G_x = \begin{bmatrix} -1 & 0 & 1 \\ -2 & 0 & 2 \\ -1 & 0 & 1 \end{bmatrix}, \quad G_y = \begin{bmatrix} -1 & -2 & -1 \\ 0 & 0 & 0 \\ 1 & 2 & 1 \end{bmatrix}
+
+
+Temporal gradient (It) is computed as the difference between warped and original frames.
+
+Image Pyramid Construction
+
+A Gaussian pyramid is built with a scaling factor of 0.5 per level (typically 3–4 levels).
+The build-pyramid function downsamples images using cv2.pyrDown and reverses the list for coarse-to-fine processing.
+
+Pyramidal Lucas-Kanade Algorithm
+
+Optical flow is estimated starting at the coarsest pyramid level and refined at finer levels.
+At each level:
+Flow from the previous level is upsampled using cv2.pyrUp and scaled by 2.
+Gradients (Ix, Iy) are computed for the current level.
+The second image is warped using current flow estimates.
+Flow updates are computed via least-squares:A = \begin{bmatrix} I_x & I_y \end{bmatrix}, \quad b = -I_t, \quad \mathbf{A}^T \mathbf{A} \nu = \mathbf{A}^T \mathbf{b}
+
+
+Iterations (typically 3) refine the flow estimates.
+
+
+
+Visualization
+
+Flow fields (u, v) are visualized using quiver plots, with arrows indicating motion direction and magnitude.
+An exaggeration factor (e.g., 50) is applied for better visibility.
+
+Results
+
+The algorithm successfully estimated motion in the Dimetrodon sequence, capturing both small and large displacements.
+Quiver plots demonstrated accurate motion fields, outperforming single-scale Lucas-Kanade methods for larger motions.
+Visualizations confirmed the effectiveness of the pyramidal approach.
+
+Future Improvements
+
+Incorporate feature-based tracking (e.g., Shi-Tomasi corner detection) for enhanced robustness.
+Optimize for real-time performance using parallel processing or GPU acceleration.
+Explore advanced warping techniques or robust cost functions.
+
+References
+
+B. D. Lucas and T. Kanade, "An iterative image registration technique with an application to stereo vision," Proceedings of Imaging Understanding Workshop, 1981.
+J. Y. Bouguet, "Pyramidal Implementation of the Lucas-Kanade Feature Tracker," Intel Corporation, 1999.
+R. Szeliski, Computer Vision: Algorithms and Applications, Springer, 2010.
+J. Barron, D. Fleet, and S. Beauchemin, "Performance of Optical Flow Techniques," International Journal of Computer Vision, vol. 12, no. 1, pp. 43–77, 1994.
+
+Authors
+
+Mostafa Hazem Mostafa
+Khaled Walid Ghalwash
+
+License
+This project is licensed under the MIT License - see the LICENSE file for details.
